@@ -3,7 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/colorPrimaryDark"
     tools:context="salt.movil.funfit.ui.InicialActivity">
+
+    <EditText
+        android:id="@+id/edit_username_inicial_activity"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:hint="username"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_continue_inicial_activity"
+        android:background="@color/colorPrimary"
+        android:text="continue"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/edit_username_inicial_activity"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
