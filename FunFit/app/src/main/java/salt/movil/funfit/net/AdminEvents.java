@@ -25,7 +25,6 @@ public class AdminEvents {
         try {
             mSocket = MySocket.getInstance();
             connectSucces = true;
-            Log.i("salt1","Socket connected to listen");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Log.e("salt1","No connect with socket, error: "+e.toString());
@@ -40,6 +39,7 @@ public class AdminEvents {
         }
         this.isocketCallBacks = isocketCallBacks;
         mSocket.on("start_game_players",startGame);
+        mSocket.on("reduce_time_players",reduceTime);
     }
 
     //region Events
@@ -48,6 +48,13 @@ public class AdminEvents {
         public void call(Object... args) {
             Log.i("salt1","Llega al evento de starGame");
             isocketCallBacks.onEvent(Constants.EVENT_START_GAME_PLAYERS, args);
+        }
+    };
+
+    private Emitter.Listener reduceTime = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            isocketCallBacks.onEvent(Constants.EVENT_REDUCE_TIME_PLAYERS,args);
         }
     };
     //endregion

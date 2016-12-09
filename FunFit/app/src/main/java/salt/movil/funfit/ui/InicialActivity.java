@@ -9,8 +9,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
 
 import java.net.URISyntaxException;
@@ -27,6 +29,7 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
     //region Views
     EditText edtUsername;
     Button btnContinue;
+    TextView txtRegistered;
     //endregion
 
     //region Vars
@@ -57,6 +60,7 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
     private void getViews(){
         edtUsername = (EditText) findViewById(R.id.edit_username_inicial_activity);
         btnContinue = (Button) findViewById(R.id.btn_continue_inicial_activity);
+        txtRegistered = (TextView) findViewById(R.id.txt_registered_user_initial_activity);
 
         btnContinue.setOnClickListener(this);
     }
@@ -70,7 +74,6 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
 
     @Override
     public void onEvent(int type, Object... args) {
-        Log.i("salt1","on event: "+type);
         switch (type){
             case Constants.EVENT_START_GAME_PLAYERS:
                 startGame(args);
@@ -81,12 +84,37 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
 
     //region Actions game
     private void startGame(Object... args){
-        Log.i("salt1","Inicio juego: "+args.toString());
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
+
+    private void registerPlayer(){
+        String username = edtUsername.getText().toString();
+        Player.getInstance().setUsername(username);
+
+        try {
+            socket = MySocket.getInstance();
+            socket.emit(Constants.EMIT_REGISTER_PLAYER, username, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnContinue.setEnabled(false);
+                            txtRegistered.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                }
+            });
+        } catch (URISyntaxException e) {
+            Log.e("salt1","No connect socket, when register player, error: "+e.toString());
+            e.printStackTrace();
+        }
+    }
     //endregion
 
+    //region OnClik and onStart
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -96,23 +124,10 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
         }
     }
 
-    private void registerPlayer(){
-        String username = edtUsername.getText().toString();
-        Player.getInstance().setUsername(username);
-
-        try {
-            socket = MySocket.getInstance();
-            socket.emit(Constants.EMIT_REGISTER_PLAYER,username);
-            Log.i("salt1","Socket enviado de registro");
-        } catch (URISyntaxException e) {
-            Log.e("salt1","No connect socket, when register player, error: "+e.toString());
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onStop() {
         socket.disconnect();
         super.onStop();
     }
+    //endregion
 }

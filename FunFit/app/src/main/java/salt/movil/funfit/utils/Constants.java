@@ -5,6 +5,11 @@ package salt.movil.funfit.utils;
  */
 
 public class Constants {
+    //event listen
     public static final int EVENT_START_GAME_PLAYERS = 10;
+    public static final int EVENT_REDUCE_TIME_PLAYERS = 11;
+
+    //events emit
     public static final String EMIT_REGISTER_PLAYER = "register_player";
+    public static final String EMIT_REDUCE_TIME_PLAYERS = "reduce_time_players";
 }

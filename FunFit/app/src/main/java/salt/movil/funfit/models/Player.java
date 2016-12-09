@@ -15,6 +15,7 @@ public class Player {
     }
 
     String username;
+    int time = 40;
 
     public String getUsername() {
         return username;
@@ -22,5 +23,13 @@ public class Player {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 }

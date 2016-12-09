@@ -9,8 +9,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="salt.movil.funfit.ui.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+
+    <include
+        layout="@layout/top_bar_game"
         android:layout_height="wrap_content"
-        android:text="Interfaz del Juego" />
+        android:layout_width="match_parent"/>
+
 </RelativeLayout>
