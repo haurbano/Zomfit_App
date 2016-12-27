@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -19,7 +18,7 @@ import java.net.URISyntaxException;
 
 import salt.movil.funfit.R;
 import salt.movil.funfit.models.Player;
-import salt.movil.funfit.net.AdminEvents;
+import salt.movil.funfit.GameLogic.AdminEvents;
 import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
@@ -90,31 +89,37 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
 
     private void registerPlayer(){
         String username = edtUsername.getText().toString();
-        Player.getInstance().setUsername(username);
+        if (!username.isEmpty()){
+            Player.getInstance().setUsername(username);
+            try {
+                socket = MySocket.getInstance();
+                socket.emit(Constants.EMIT_REGISTER_PLAYER, username, new Ack() {
+                    @Override
+                    public void call(Object... args) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btnContinue.setEnabled(false);
+                                txtRegistered.setVisibility(View.VISIBLE);
+                            }
+                        });
 
-        try {
-            socket = MySocket.getInstance();
-            socket.emit(Constants.EMIT_REGISTER_PLAYER, username, new Ack() {
-                @Override
-                public void call(Object... args) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            btnContinue.setEnabled(false);
-                            txtRegistered.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                }
-            });
-        } catch (URISyntaxException e) {
-            Log.e("salt1","No connect socket, when register player, error: "+e.toString());
-            e.printStackTrace();
+                    }
+                });
+            } catch (URISyntaxException e) {
+                Log.e("salt1","No connect socket, when register player, error: "+e.toString());
+                e.printStackTrace();
+            }
+        }else {
+            Log.i("salt1","Nombre empty");
         }
+
+
+
     }
     //endregion
 
-    //region OnClik and onStart
+    //region OnClik and onDestroy
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -125,9 +130,10 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
     }
 
     @Override
-    protected void onStop() {
-        socket.disconnect();
-        super.onStop();
+    protected void onDestroy() {
+        if (socket!=null && socket.connected())
+            socket.disconnect();
+        super.onDestroy();
     }
     //endregion
 }

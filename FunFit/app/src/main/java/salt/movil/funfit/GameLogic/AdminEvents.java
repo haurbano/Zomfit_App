@@ -1,4 +1,4 @@
-package salt.movil.funfit.net;
+package salt.movil.funfit.GameLogic;
 
 import android.util.Log;
 
@@ -7,6 +7,7 @@ import com.github.nkzawa.socketio.client.Socket;
 
 import java.net.URISyntaxException;
 
+import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
 

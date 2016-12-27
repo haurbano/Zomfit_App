@@ -1,24 +1,40 @@
 package salt.movil.funfit.ui;
 
+import android.databinding.DataBindingUtil;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import salt.movil.funfit.GameLogic.AdminResultQR;
 import salt.movil.funfit.R;
 import salt.movil.funfit.background.TimerUser;
+import salt.movil.funfit.databinding.ActivityMainBinding;
 import salt.movil.funfit.models.Player;
-import salt.movil.funfit.net.AdminEvents;
+import salt.movil.funfit.GameLogic.AdminEvents;
+import salt.movil.funfit.ui.fragments.QRScannerFragment;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
 
-public class MainActivity extends AppCompatActivity implements IsocketCallBacks {
+public class MainActivity extends AppCompatActivity implements IsocketCallBacks, QRScannerFragment.Ireader {
 
-    TextView txtTimePlayer;
+    //region Big views
+    ActivityMainBinding binding;
+    QRScannerFragment qrScannerFragment;
+    //endregion
+
+    //region Vars
+    AdminResultQR adminResultQR;
     TimerUser timerUser;
 
     Handler handler = new Handler(){
@@ -29,14 +45,13 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks 
             }
         }
     };
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fullScreenMode();
-        setContentView(R.layout.activity_main);
-
-        getViews();
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         initSocket();
     }
 
@@ -51,12 +66,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks 
     }
     //endregion
 
-    //region GetViews
-    private void getViews(){
-        txtTimePlayer = (TextView) findViewById(R.id.time_player_main_activity);
-    }
-    //endregion
-
     //region Timer
     private void initTime(){
         if (timerUser==null){
@@ -66,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks 
     }
 
     private void addTime(int timeAdd){
-
+        timerUser.addTime(timeAdd);
     }
 
     private void reduceTime(int timeReduce){
@@ -77,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks 
 
     private void showTime(int time){
         if (time>0){
-            txtTimePlayer.setText(" "+time);
+            binding.contentTopOption.timePlayerMainActivity.setText(""+time);
         }else if (timerUser!=null){
             timerUser.stopTimer();
             Toast.makeText(this,"Perdio",Toast.LENGTH_SHORT).show();
@@ -86,12 +95,35 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks 
 
     //endregion
 
-    //region OnResume , OnDestroy
+    //region QR Reader
+    private void initQRReader(){
+        qrScannerFragment = new QRScannerFragment();
+        qrScannerFragment.setInterface(this);
+        changefragment(qrScannerFragment,R.id.frame_content_qr_reader);
+        qrScannerFragment.startScann();
+    }
 
+    private void changefragment(Fragment fragment, int idLayout){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(idLayout,fragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void setResult(String result) {
+        if (adminResultQR == null)
+            adminResultQR= new AdminResultQR();
+        adminResultQR.handleResult(result,timerUser);
+        initQRReader();
+    }
+    //endregion
+
+    //region OnResume , OnDestroy
     @Override
     protected void onResume() {
         super.onResume();
         initTime();
+        initQRReader();
     }
 
     @Override
@@ -112,10 +144,13 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks 
 
     @Override
     public void onEvent(int type, Object... args) {
+        JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
+        Log.i("salt1","Json que llega: "+jo);
+        Log.i("salt1","Json que llega: "+args[0].toString());
         switch (type){
             case Constants.EVENT_REDUCE_TIME_PLAYERS:
-                if (!args[0].equals(Player.getInstance().getUsername())){
-                    reduceTime(Integer.parseInt(args[1].toString()));
+                if (!jo.get("player").equals(Player.getInstance().getUsername())){
+                    reduceTime(Integer.parseInt(jo.get("time").toString()));
                 }
                 break;
         }

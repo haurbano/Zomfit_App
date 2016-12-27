@@ -3,6 +3,7 @@
     package="salt.movil.funfit">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -21,6 +22,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="landscape"
             android:name=".ui.MainActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>

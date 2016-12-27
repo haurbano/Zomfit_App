@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout>
+    <data>
+        <variable
+            name="number"
+            type="int"/>
+    </data>
 
-    <TextView
-        android:layout_centerHorizontal="true"
-        android:textSize="22sp"
-        android:id="@+id/time_player_main_activity"
-        android:layout_margin="10dp"
-        android:text="Time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:textSize="22sp"
+            android:id="@+id/time_player_main_activity"
+            android:layout_margin="10dp"
+            android:text="Time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+</layout>
