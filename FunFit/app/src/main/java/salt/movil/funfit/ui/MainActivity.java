@@ -25,8 +25,9 @@ import salt.movil.funfit.GameLogic.AdminEvents;
 import salt.movil.funfit.ui.fragments.QRScannerFragment;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
+import salt.movil.funfit.utils.alerts.AlertGeneral;
 
-public class MainActivity extends AppCompatActivity implements IsocketCallBacks, QRScannerFragment.Ireader {
+public class MainActivity extends AppCompatActivity implements IsocketCallBacks, QRScannerFragment.Ireader, AdminResultQR.IResultQr {
 
     //region Big views
     ActivityMainBinding binding;
@@ -74,10 +75,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         }
     }
 
-    private void addTime(int timeAdd){
-        timerUser.addTime(timeAdd);
-    }
-
     private void reduceTime(int timeReduce){
         if (timerUser!=null){
             timerUser.reduceTime(timeReduce);
@@ -98,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     //region QR Reader
     private void initQRReader(){
         qrScannerFragment = new QRScannerFragment();
-        qrScannerFragment.setInterface(this);
         changefragment(qrScannerFragment,R.id.frame_content_qr_reader);
         qrScannerFragment.startScann();
     }
@@ -112,10 +108,43 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     @Override
     public void setResult(String result) {
         if (adminResultQR == null)
-            adminResultQR= new AdminResultQR();
-        adminResultQR.handleResult(result,timerUser);
+            adminResultQR= new AdminResultQR(timerUser,this);
+        adminResultQR.handleResult(result);
         initQRReader();
     }
+
+    @Override
+    public void setActionQr(int code, int value) {
+        switch (code){
+            case AdminResultQR.KEY1:
+                addKey();
+                break;
+            case AdminResultQR.ADD_TIME_5:
+                showAlert("Good","you have more time");
+                break;
+            case AdminResultQR.REDUCE_TIME_5:
+                showAlert(":(","you have less time");
+                break;
+            case AdminResultQR.READED_CODE:
+                showAlert("Readedd code","don't read this code");
+                break;
+        }
+    }
+
+    private void addKey(){
+        int numberOfKeys = Player.getInstance().getNumberKeys();
+        if (numberOfKeys == 3){
+            showAlert("Good","You have 3 keys, run to the cure");
+        }else {
+            binding.contentTopOption.txtNumberOfKeys.setText(numberOfKeys+"");
+        }
+    }
+
+    private void showAlert(String title, String msj){
+        AlertGeneral alert = AlertGeneral.newInstance(title,msj);
+        alert.show(getSupportFragmentManager(),"tag");
+    }
+
     //endregion
 
     //region OnResume , OnDestroy

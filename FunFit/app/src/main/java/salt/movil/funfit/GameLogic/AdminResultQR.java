@@ -1,7 +1,6 @@
 package salt.movil.funfit.GameLogic;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.JsonObject;
@@ -26,16 +25,29 @@ public class AdminResultQR {
     public static final int REDUCE_TIME_10 = 4;
     public static final int REDUCE_TIME_5 = 5;
     public static final int REDUCE_TIME_7 = 6;
-    public static final int KEY = 7;
+    public static final int KEY1 = 7;
+    public static final int KEY2 = 8;
+    public static final int KEY3 = 9;
+    public static final int READED_CODE = 10;
+
     //endregion
 
-    TimerUser timerUser;
+    public interface IResultQr{
+        void setActionQr(int code, int value);
+    }
 
-    public void handleResult(String result,TimerUser timerUser){
+    TimerUser timerUser;
+    IResultQr iResultQr;
+
+    public AdminResultQR(TimerUser timerUser, IResultQr iResultQr) {
         this.timerUser = timerUser;
+        this.iResultQr = iResultQr;
+    }
+
+    public void handleResult(String result){
         int code = Integer.parseInt(result);
         if (Player.getInstance().getCodesReaders().contains(code)){
-
+            iResultQr.setActionQr(READED_CODE,0);
         }else {
             aplyCode(code);
         }
@@ -61,7 +73,13 @@ public class AdminResultQR {
             case REDUCE_TIME_5:
                 reduceTime(5);
                 break;
-            case KEY:
+            case KEY1:
+                addKey();
+                break;
+            case KEY2:
+                addKey();
+                break;
+            case KEY3:
                 addKey();
                 break;
         }
@@ -70,22 +88,28 @@ public class AdminResultQR {
 
     private void addTime(int time){
         timerUser.addTime(time);
+        iResultQr.setActionQr(ADD_TIME_5,time);
     }
 
     private void reduceTime(int time){
         try {
-            Socket socket = MySocket.getInstance();
-            JsonObject jo = new JsonObject();
-            jo.addProperty("player",Player.getInstance().getUsername());
-            jo.addProperty("time",time);
-            socket.emit(Constants.EMIT_REDUCE_TIME_PLAYERS,jo);
+            sendTimeToServer(time);
+            iResultQr.setActionQr(REDUCE_TIME_5,time);
         } catch (URISyntaxException e) {
             Log.e("salt1","Error connection socket in send reduce time: "+e.toString());
         }
     }
 
-    private void addKey(){
-        Player.getInstance().addKey();
+    private void sendTimeToServer(int time) throws URISyntaxException {
+        Socket socket = MySocket.getInstance();
+        JsonObject jo = new JsonObject();
+        jo.addProperty("player",Player.getInstance().getUsername());
+        jo.addProperty("time",time);
+        socket.emit(Constants.EMIT_REDUCE_TIME_PLAYERS,jo);
     }
 
+    private void addKey(){
+        Player.getInstance().addKey();
+        iResultQr.setActionQr(KEY1,0);
+    }
 }

@@ -1,6 +1,7 @@
 package salt.movil.funfit.ui.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -29,8 +30,10 @@ public class QRScannerFragment extends Fragment implements ZXingScannerView.Resu
         void setResult(String result);
     }
 
-    public void setInterface(Ireader ireader){
-        this.ireader =ireader;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ireader = (Ireader) activity;
     }
 
     @Override
