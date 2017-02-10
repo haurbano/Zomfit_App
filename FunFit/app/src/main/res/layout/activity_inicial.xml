@@ -7,6 +7,7 @@
     tools:context="salt.movil.funfit.ui.InicialActivity">
 
     <EditText
+        android:textColorHint="@color/colorAccent"
         android:id="@+id/edit_username_inicial_activity"
         android:gravity="center"
         android:layout_centerInParent="true"
@@ -18,6 +19,7 @@
         android:id="@+id/btn_continue_inicial_activity"
         android:background="@color/colorPrimary"
         android:text="continue"
+        android:textColor="@color/colorAccent"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/edit_username_inicial_activity"

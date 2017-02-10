@@ -13,8 +13,15 @@ import android.widget.TextView;
 
 import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import salt.movil.funfit.R;
 import salt.movil.funfit.models.Player;
@@ -22,6 +29,7 @@ import salt.movil.funfit.GameLogic.AdminEvents;
 import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
+import salt.movil.funfit.utils.Players;
 
 public class InicialActivity extends AppCompatActivity implements IsocketCallBacks, View.OnClickListener {
 
@@ -83,8 +91,23 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
 
     //region Actions game
     private void startGame(Object... args){
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
+        int time = Integer.parseInt((String) args[1]);
+        Player.getInstance().setTime(time);
+        try {
+            JSONArray players = new JSONArray(args[0].toString());
+            for (int i=0; i<players.length();i++){
+                Player player = new Player();
+                player.setNumberKeys(players.getJSONObject(i).getInt("keys"));
+                player.setUsername(players.getJSONObject(i).getString("name"));
+                Players.getInstace().getPlayers().add(player);
+            }
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
+        } catch (JSONException e) {
+            Log.e("salt","Error whe try convert String to JSONArray");
+            e.printStackTrace();
+        }
+
     }
 
     private void registerPlayer(){

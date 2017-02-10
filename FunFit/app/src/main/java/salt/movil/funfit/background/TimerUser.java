@@ -3,6 +3,8 @@ package salt.movil.funfit.background;
 import android.os.Message;
 import android.os.Handler;
 
+import salt.movil.funfit.models.Player;
+
 
 /**
  * Created by Hamilton Urbano on 19/11/2016.
@@ -20,7 +22,7 @@ public class TimerUser extends Thread{
     public TimerUser(Handler handler){
         this.handler = handler;
         running = true;
-        time = 30;
+        time = Player.getInstance().getTime();
     }
 
     @Override

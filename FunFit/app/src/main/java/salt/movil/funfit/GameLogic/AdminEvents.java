@@ -4,9 +4,12 @@ import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.net.URISyntaxException;
 
+import salt.movil.funfit.models.Player;
 import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
@@ -41,6 +44,7 @@ public class AdminEvents {
         this.isocketCallBacks = isocketCallBacks;
         mSocket.on("start_game_players",startGame);
         mSocket.on("reduce_time_players",reduceTime);
+        mSocket.on("romove_key",removeKey);
     }
 
     //region Events
@@ -55,7 +59,21 @@ public class AdminEvents {
     private Emitter.Listener reduceTime = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            isocketCallBacks.onEvent(Constants.EVENT_REDUCE_TIME_PLAYERS,args);
+            JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
+            if (jo.get("player").getAsString().equals(Player.getInstance().getUsername())){
+                isocketCallBacks.onEvent(Constants.EVENT_REDUCE_TIME_PLAYERS,args);
+            }
+
+        }
+    };
+
+    private Emitter.Listener removeKey = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
+            if (jo.get("player").getAsString().equals(Player.getInstance().getUsername())){
+                isocketCallBacks.onEvent(Constants.EVENT_REMOVE_KEY,args);
+            }
         }
     };
     //endregion

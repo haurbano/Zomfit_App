@@ -1,33 +1,41 @@
 package salt.movil.funfit.ui;
 
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import salt.movil.funfit.GameLogic.AdminEvents;
 import salt.movil.funfit.GameLogic.AdminResultQR;
 import salt.movil.funfit.R;
 import salt.movil.funfit.background.TimerUser;
 import salt.movil.funfit.databinding.ActivityMainBinding;
 import salt.movil.funfit.models.Player;
-import salt.movil.funfit.GameLogic.AdminEvents;
+import salt.movil.funfit.models.Power;
+import salt.movil.funfit.ui.adapters.PowerAdapter;
 import salt.movil.funfit.ui.fragments.QRScannerFragment;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
+import salt.movil.funfit.utils.Players;
 import salt.movil.funfit.utils.alerts.AlertGeneral;
+import salt.movil.funfit.utils.alerts.AlertPlayers;
 
-public class MainActivity extends AppCompatActivity implements IsocketCallBacks, QRScannerFragment.Ireader, AdminResultQR.IResultQr {
+public class MainActivity extends AppCompatActivity implements IsocketCallBacks, QRScannerFragment.Ireader, AdminResultQR.IResultQr, AdapterView.OnItemClickListener {
 
     //region Big views
     ActivityMainBinding binding;
@@ -37,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     //region Vars
     AdminResultQR adminResultQR;
     TimerUser timerUser;
+    List<Power> powers;
 
     Handler handler = new Handler(){
         @Override
@@ -54,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         fullScreenMode();
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         initSocket();
+        initPowers();
     }
 
     //region FullScreenMode
@@ -108,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     @Override
     public void setResult(String result) {
         if (adminResultQR == null)
-            adminResultQR= new AdminResultQR(timerUser,this);
+            adminResultQR= new AdminResultQR(this);
         adminResultQR.handleResult(result);
         initQRReader();
     }
@@ -119,14 +129,18 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             case AdminResultQR.KEY1:
                 addKey();
                 break;
-            case AdminResultQR.ADD_TIME_5:
-                showAlert("Good","you have more time");
+            case AdminResultQR.ADD_TIME:
+                timerUser.addTime(value);
+                showAlert("Bien","Tienes más tiempo");
                 break;
-            case AdminResultQR.REDUCE_TIME_5:
-                showAlert(":(","you have less time");
+            case AdminResultQR.REDUCE_TIME:
+                addPower(Power.REDUCE_TIME_ACCTION,value);
+                break;
+            case AdminResultQR.REMOVE_ENEMY_KEY:
+                addPower(Power.REMOVE_ENEMY_KEY, value);
                 break;
             case AdminResultQR.READED_CODE:
-                showAlert("Readedd code","don't read this code");
+                showAlert("Ya lo leiste","Busca otro codigo");
                 break;
         }
     }
@@ -134,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     private void addKey(){
         int numberOfKeys = Player.getInstance().getNumberKeys();
         if (numberOfKeys == 3){
-            showAlert("Good","You have 3 keys, run to the cure");
+            showAlert("Bien","Tienes 3 llaves, corre a la cura");
         }else {
             binding.contentTopOption.txtNumberOfKeys.setText(numberOfKeys+"");
         }
@@ -145,6 +159,23 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         alert.show(getSupportFragmentManager(),"tag");
     }
 
+    private void addPower(String acction, int value){
+        if (powers==null)
+            powers = new ArrayList<>();
+        Power power;
+        if (acction.equals(Power.REDUCE_TIME_ACCTION))
+            power = new Power(acction,value,R.drawable.ic_clock);
+        else
+            power = new Power(acction,value,R.drawable.ic_key);
+
+        powers.add(power);
+        showPowers(powers);
+    }
+
+    private void showPowers(List<Power> data){
+        PowerAdapter adapter = new PowerAdapter(data,this);
+        binding.contentPowersLayout.listViewPowers.setAdapter(adapter);
+    }
     //endregion
 
     //region OnResume , OnDestroy
@@ -174,16 +205,52 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     @Override
     public void onEvent(int type, Object... args) {
         JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
-        Log.i("salt1","Json que llega: "+jo);
-        Log.i("salt1","Json que llega: "+args[0].toString());
         switch (type){
             case Constants.EVENT_REDUCE_TIME_PLAYERS:
-                if (!jo.get("player").equals(Player.getInstance().getUsername())){
                     reduceTime(Integer.parseInt(jo.get("time").toString()));
-                }
+                    showAlert(":(","You have less time by "+jo.get("sender").getAsString());
+                break;
+            case Constants.EVENT_REMOVE_KEY:
+                removeKey(jo);
                 break;
         }
     }
+    //endregion
+
+
+
+    //region  Powers
+    private void initPowers(){
+        binding.contentPowersLayout.listViewPowers.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Power currentPower = powers.get(position);
+        powers.remove(position);
+        showPowers(powers);
+
+        AlertPlayers alertPlayers = new AlertPlayers();
+        alertPlayers.setArguments(Players.getInstace().getPlayers(),currentPower);
+        alertPlayers.show(getSupportFragmentManager(),"tag");
+    }
+
+    private void removeKey(JsonObject jo){
+        final int numberKeys = Player.getInstance().getNumberKeys();
+        if (numberKeys!=0){
+            final String sender = jo.get("sender").getAsString();
+            Player.getInstance().setNumberKeys(numberKeys-1);
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    binding.contentTopOption.txtNumberOfKeys.setText((numberKeys-1)+"");
+                    showAlert("Menos una llave","El enemigo "+sender+" te a quitado una llave");
+                }
+            });
+        }
+    }
+
+
     //endregion
 
 }
