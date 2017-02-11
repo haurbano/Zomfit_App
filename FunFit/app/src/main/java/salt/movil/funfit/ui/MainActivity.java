@@ -1,5 +1,6 @@
 package salt.movil.funfit.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,12 +8,10 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -96,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             binding.contentTopOption.timePlayerMainActivity.setText(""+time);
         }else if (timerUser!=null){
             timerUser.stopTimer();
-            Toast.makeText(this,"Perdio",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this,GameOverActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -216,8 +216,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         }
     }
     //endregion
-
-
 
     //region  Powers
     private void initPowers(){

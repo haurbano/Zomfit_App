@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="salt.movil.funfit">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -21,8 +21,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="landscape"
-            android:name=".ui.MainActivity"/>
+            android:name=".ui.MainActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.GameOverActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

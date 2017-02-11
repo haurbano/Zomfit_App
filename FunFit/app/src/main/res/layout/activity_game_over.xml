@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="player"
+            type="salt.movil.funfit.models.Player"/>
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_game_over"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="salt.movil.funfit.ui.GameOverActivity"
+        android:paddingTop="20dp">
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Display2"
+            android:gravity="center"
+            android:text="@{player.username}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Display1"
+            android:gravity="center"
+            android:text="Game Over"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</layout>
+

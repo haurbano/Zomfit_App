@@ -14,10 +14,12 @@ public class MySocket {
 
     public static Socket getInstance() throws URISyntaxException {
         if (instance==null)
-            instance = IO.socket("http://192.168.1.25:3000/");
+            instance = IO.socket("http://192.168.0.14:3000/");
         if (!instance.connected())
             instance.connect();
 
         return instance;
     }
+
+
 }
