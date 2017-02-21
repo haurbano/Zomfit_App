@@ -29,7 +29,7 @@ public class TimerUser extends Thread{
     public void run() {
         while (running || time>-1){
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1100);
                 time = time - 1;
                 Message msg = handler.obtainMessage();
                 msg.what = TIME_USER_TAG;

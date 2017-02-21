@@ -7,22 +7,34 @@
         type="String"/>
     </data>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="salt.movil.funfit.ui.MainActivity">
-
-        <include
-            android:id="@+id/content_top_option"
-            layout="@layout/top_bar_game"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"/>
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/content_top_option">
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/frame_content_qr_reader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_alignParentLeft="true"
+                    android:drawableLeft="@drawable/ic_clock"
+                    android:drawablePadding="10dp"
+                    android:id="@+id/time_player"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_margin="10dp"
+                    android:textSize="40sp"
+                    android:text="3:00"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
 
             <include
                 android:id="@+id/content_powers_layout"
@@ -31,22 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent" />
 
-            <FrameLayout
-                android:id="@+id/frame_content_qr_reader"
-                android:layout_marginTop="10dp"
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:layout_height="match_parent"/>
-
-            <TextView
-                android:text="i do not nkow"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent" />
         </LinearLayout>
-
-
-    </RelativeLayout>
 
 </layout>
 

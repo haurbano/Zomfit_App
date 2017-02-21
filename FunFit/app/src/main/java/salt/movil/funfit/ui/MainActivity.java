@@ -2,6 +2,10 @@ package salt.movil.funfit.ui;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +22,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import salt.movil.funfit.GameLogic.AdminEvents;
 import salt.movil.funfit.GameLogic.AdminResultQR;
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     AdminResultQR adminResultQR;
     TimerUser timerUser;
     List<Power> powers;
+    MediaPlayer mPLayer;
 
     Handler handler = new Handler(){
         @Override
@@ -63,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         initSocket();
         initPowers();
+        mPLayer = MediaPlayer.create(this,R.raw.beep);
+
     }
 
     //region FullScreenMode
@@ -92,12 +100,28 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     private void showTime(int time){
         if (time>0){
-            binding.contentTopOption.timePlayerMainActivity.setText(""+time);
+            if (time<11)
+                soundPip();
+            binding.timePlayer.setText(""+formatSeconds(time));
         }else if (timerUser!=null){
             timerUser.stopTimer();
+            mPLayer.stop();
             Intent intent = new Intent(this,GameOverActivity.class);
             startActivity(intent);
         }
+    }
+
+    private void soundPip(){
+        if (mPLayer.isPlaying())
+            mPLayer.stop();
+        mPLayer.start();
+    }
+
+    private String formatSeconds(int sec){
+        long minutes = TimeUnit.SECONDS.toMinutes(sec);
+        long seconds = TimeUnit.SECONDS.toSeconds(sec) - TimeUnit.MINUTES.toSeconds(minutes);
+        String formato = "%02d:%02d";
+        return String.format(formato, minutes, seconds);
     }
 
     //endregion
@@ -149,8 +173,16 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         int numberOfKeys = Player.getInstance().getNumberKeys();
         if (numberOfKeys == 3){
             showAlert("Bien","Tienes 3 llaves, corre a la cura");
+            binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key);
         }else {
-            binding.contentTopOption.txtNumberOfKeys.setText(numberOfKeys+"");
+            switch (numberOfKeys){
+                case 1:
+                    binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);
+                    break;
+                case 2:
+                    binding.contentPowersLayout.key2.setImageResource(R.drawable.ic_key);
+                    break;
+            }
         }
     }
 
@@ -238,13 +270,18 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         if (numberKeys!=0){
             final String sender = jo.get("sender").getAsString();
             Player.getInstance().setNumberKeys(numberKeys-1);
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    binding.contentTopOption.txtNumberOfKeys.setText((numberKeys-1)+"");
-                    showAlert("Menos una llave","El enemigo "+sender+" te a quitado una llave");
-                }
-            });
+            showAlert("Menos una llave", "Te la quito "+sender);
+            switch (numberKeys){
+                case 1:
+                    binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key_gray);
+                    break;
+                case 2:
+                    binding.contentPowersLayout.key2.setImageResource(R.drawable.ic_key_gray);
+                    break;
+                case 3:
+                    binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key_gray);
+                    break;
+            }
         }
     }
 
