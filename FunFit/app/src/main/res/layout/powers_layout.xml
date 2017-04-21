@@ -7,9 +7,10 @@
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@color/colorAccent"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:padding="10dp">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -18,19 +19,19 @@
 
             <ImageView
                 android:id="@+id/key_1"
-                android:src="@drawable/ic_key_gray"
+                android:src="@drawable/ic_grey_key"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
             <ImageView
                 android:id="@+id/key_2"
-                android:src="@drawable/ic_key_gray"
+                android:src="@drawable/ic_grey_key"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
             <ImageView
                 android:id="@+id/key_3"
-                android:src="@drawable/ic_key_gray"
+                android:src="@drawable/ic_grey_key"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
@@ -38,7 +39,7 @@
         </LinearLayout>
 
         <View
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>

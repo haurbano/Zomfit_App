@@ -13,7 +13,7 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:layout_weight="4"
+                android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent">
 
@@ -24,7 +24,7 @@
 
                 <TextView
                     android:layout_alignParentLeft="true"
-                    android:drawableLeft="@drawable/ic_clock"
+                    android:drawableLeft="@drawable/ic_clock_life_time"
                     android:drawablePadding="10dp"
                     android:id="@+id/time_player"
                     android:textColor="@color/colorPrimary"
@@ -33,6 +33,13 @@
                     android:text="3:00"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/image_for_animate_power"
+                    android:visibility="invisible"
+                    android:layout_centerInParent="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
 
             </RelativeLayout>
 

@@ -1,17 +1,18 @@
 package salt.movil.funfit.ui;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Point;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         initSocket();
         initPowers();
         mPLayer = MediaPlayer.create(this,R.raw.beep);
-
     }
 
     //region FullScreenMode
@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
                 addPower(Power.REMOVE_ENEMY_KEY, value);
                 break;
             case AdminResultQR.READED_CODE:
-                showAlert("Ya lo leiste","Busca otro codigo");
                 break;
         }
     }
@@ -196,10 +195,11 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             powers = new ArrayList<>();
         Power power;
         if (acction.equals(Power.REDUCE_TIME_ACCTION))
-            power = new Power(acction,value,R.drawable.ic_clock);
+            power = new Power(acction,value,R.drawable.ic_clock_life_time);
         else
             power = new Power(acction,value,R.drawable.ic_key);
 
+        animAddPower(power);
         powers.add(power);
         showPowers(powers);
     }
@@ -207,6 +207,35 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     private void showPowers(List<Power> data){
         PowerAdapter adapter = new PowerAdapter(data,this);
         binding.contentPowersLayout.listViewPowers.setAdapter(adapter);
+    }
+    //endregion
+
+    //region Animations
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void animAddPower(Power power){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int height = point.y;
+        binding.imageForAnimatePower.setImageResource(power.getImage());
+        binding.imageForAnimatePower.setVisibility(View.VISIBLE);
+        binding.imageForAnimatePower.animate().setDuration(1500).y(10).x(height).scaleY(0.5f).scaleX(0.5f).withEndAction(runnable);
+    }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    binding.imageForAnimatePower.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+    };
+
+    private void animAplyPower(){
+
     }
     //endregion
 
@@ -273,13 +302,13 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             showAlert("Menos una llave", "Te la quito "+sender);
             switch (numberKeys){
                 case 1:
-                    binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key_gray);
+                    binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);
                     break;
                 case 2:
-                    binding.contentPowersLayout.key2.setImageResource(R.drawable.ic_key_gray);
+                    binding.contentPowersLayout.key2.setImageResource(R.drawable.ic_key);
                     break;
                 case 3:
-                    binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key_gray);
+                    binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key);
                     break;
             }
         }

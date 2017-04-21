@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.InicialActivity"
+            android:name=".ui.FirstActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,13 @@
         <activity
             android:name=".ui.MainActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".ui.GameOverActivity"
+        <activity
+            android:name=".ui.GameOverActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.InicialActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.CreditsActivity"
             android:screenOrientation="landscape"/>
     </application>
 

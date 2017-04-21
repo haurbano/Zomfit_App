@@ -1,31 +1,34 @@
 package salt.movil.funfit.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 
-import salt.movil.funfit.R;
-import salt.movil.funfit.models.Player;
+import pl.droidsonroids.gif.GifDrawable;
 import salt.movil.funfit.GameLogic.AdminEvents;
+import salt.movil.funfit.R;
+import salt.movil.funfit.background.TimerCountDown;
+import salt.movil.funfit.models.Player;
 import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
@@ -101,13 +104,47 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
                 player.setUsername(players.getJSONObject(i).getString("name"));
                 Players.getInstace().getPlayers().add(player);
             }
-            Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);
+            //Init countdown
+            showCountdown();
         } catch (JSONException e) {
-            Log.e("salt","Error whe try convert String to JSONArray");
+            Log.e("InitialActivity","Error whe try convert String to JSONArray");
             e.printStackTrace();
         }
+    }
 
+    private void showCountdown(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final ImageView imageView = new ImageView(this);
+        imageView.setBackgroundColor(getColor(R.color.transparent));
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    GifDrawable gif = new GifDrawable(getResources(),R.mipmap.countdown);
+                    imageView.setImageDrawable(gif);
+                    builder.setView(imageView);
+                    builder.create().show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        TimerCountDown timerCountDown = new TimerCountDown(handler);
+        timerCountDown.start();
+    }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            navigateToGame();
+        }
+    };
+
+    private void navigateToGame(){
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(intent);
     }
 
     private void registerPlayer(){
@@ -123,7 +160,8 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
                             @Override
                             public void run() {
                                 btnContinue.setEnabled(false);
-                                txtRegistered.setVisibility(View.VISIBLE);
+                                btnContinue.setText("Registrado");
+                                txtRegistered.setText("Registrado, espera a que inicie la partida");
                             }
                         });
 
@@ -136,9 +174,6 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
         }else {
             Log.i("salt1","Nombre empty");
         }
-
-
-
     }
     //endregion
 

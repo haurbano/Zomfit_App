@@ -20,10 +20,10 @@ import salt.movil.funfit.utils.IsocketCallBacks;
 
 public class AdminEvents {
 
-    Socket mSocket;
-    IsocketCallBacks isocketCallBacks;
+    private Socket mSocket;
+    private IsocketCallBacks isocketCallBacks;
 
-    boolean connectSucces;
+    private boolean connectSucces;
 
     public AdminEvents() {
         try {

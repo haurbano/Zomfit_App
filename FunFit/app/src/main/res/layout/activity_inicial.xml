@@ -1,39 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    tools:context="salt.movil.funfit.ui.InicialActivity">
+    android:background="@color/colorAccent"
+    tools:context="salt.movil.funfit.ui.InicialActivity"
+    android:orientation="horizontal">
 
-    <EditText
-        android:textColorHint="@color/colorAccent"
-        android:id="@+id/edit_username_inicial_activity"
+    <LinearLayout
         android:gravity="center"
-        android:layout_centerInParent="true"
-        android:hint="username"
-        android:layout_width="200dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5">
+
+        <TextView
+            android:gravity="center"
+            style="@style/Base.TextAppearance.AppCompat.Display1"
+            android:id="@+id/txt_registered_user_initial_activity"
+            android:layout_marginBottom="20dp"
+            android:text="Ingresa un nombre de usuario"
+            android:layout_width="wrap_content"
+            android:textColor="#000"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:hint="¡Escribe aqui!"
+            android:textColorHint="@color/colorPrimary"
+            android:background="@drawable/shape_rectangulo_punteado"
+            android:id="@+id/edit_username_inicial_activity"
+            android:gravity="center"
+            android:layout_width="200dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="30dp" />
+
+        <Button
+            android:id="@+id/btn_continue_inicial_activity"
+            android:background="@color/colorPrimary"
+            android:text="Unirse a una partida"
+            android:textColor="@color/colorAccent"
+            android:layout_marginTop="20dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
+
+
+
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:src="@mipmap/zombie_crerebro_image"
+        android:layout_weight="3"
+        android:layout_width="0dp"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_continue_inicial_activity"
-        android:background="@color/colorPrimary"
-        android:text="continue"
-        android:textColor="@color/colorAccent"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_username_inicial_activity"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/txt_registered_user_initial_activity"
-        android:layout_marginBottom="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/edit_username_inicial_activity"
-        android:text="Registrado, espera a que inicie la patida..."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-</RelativeLayout>
+</LinearLayout>
