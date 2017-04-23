@@ -60,7 +60,7 @@ public class Player {
         return codesReaders;
     }
 
-    public void addCodeReader(int code){
+    public void addCodeReaded(int code){
         codesReaders.add(code);
     }
 }

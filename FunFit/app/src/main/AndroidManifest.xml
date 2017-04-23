@@ -29,8 +29,10 @@
         <activity
             android:name=".ui.InicialActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".ui.CreditsActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.CreditsActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.WinActivity"></activity>
     </application>
 
 </manifest>

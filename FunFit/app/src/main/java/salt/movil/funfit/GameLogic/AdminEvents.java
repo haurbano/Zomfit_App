@@ -42,9 +42,10 @@ public class AdminEvents {
             return;
         }
         this.isocketCallBacks = isocketCallBacks;
-        mSocket.on("start_game_players",startGame);
-        mSocket.on("reduce_time_players",reduceTime);
-        mSocket.on("romove_key",removeKey);
+        mSocket.on(Constants.EVENT_START_GAME_PLAYERS,startGame);
+        mSocket.on(Constants.EVENT_REDUCE_TIME_PLAYERS,reduceTime);
+        mSocket.on(Constants.EVENT_REMOVE_KEY,removeKey);
+        mSocket.on(Constants.EVENT_END_GAME,endGame);
     }
 
     //region Events
@@ -52,7 +53,7 @@ public class AdminEvents {
         @Override
         public void call(Object... args) {
             Log.i("salt1","Llega al evento de starGame");
-            isocketCallBacks.onEvent(Constants.EVENT_START_GAME_PLAYERS, args);
+            isocketCallBacks.onEvent(Constants.EVENT_START_GAME_PLAYERS_CB, args);
         }
     };
 
@@ -61,7 +62,7 @@ public class AdminEvents {
         public void call(Object... args) {
             JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
             if (jo.get("player").getAsString().equals(Player.getInstance().getUsername())){
-                isocketCallBacks.onEvent(Constants.EVENT_REDUCE_TIME_PLAYERS,args);
+                isocketCallBacks.onEvent(Constants.EVENT_REDUCE_TIME_PLAYERS_CB,args);
             }
 
         }
@@ -72,8 +73,15 @@ public class AdminEvents {
         public void call(Object... args) {
             JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
             if (jo.get("player").getAsString().equals(Player.getInstance().getUsername())){
-                isocketCallBacks.onEvent(Constants.EVENT_REMOVE_KEY,args);
+                isocketCallBacks.onEvent(Constants.EVENT_REMOVE_KEY_CB,args);
             }
+        }
+    };
+
+    private Emitter.Listener endGame = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            isocketCallBacks.onEvent(Constants.EVENT_END_GAME_CB,args);
         }
     };
     //endregion

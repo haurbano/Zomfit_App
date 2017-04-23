@@ -85,7 +85,7 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
     @Override
     public void onEvent(int type, Object... args) {
         switch (type){
-            case Constants.EVENT_START_GAME_PLAYERS:
+            case Constants.EVENT_START_GAME_PLAYERS_CB:
                 startGame(args);
                 break;
         }
@@ -115,7 +115,7 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
     private void showCountdown(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final ImageView imageView = new ImageView(this);
-        imageView.setBackgroundColor(getColor(R.color.transparent));
+        imageView.setBackgroundColor(getResources().getColor(R.color.transparent));
 
         runOnUiThread(new Runnable() {
             @Override

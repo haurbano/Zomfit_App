@@ -12,15 +12,18 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +35,7 @@ import salt.movil.funfit.background.TimerUser;
 import salt.movil.funfit.databinding.ActivityMainBinding;
 import salt.movil.funfit.models.Player;
 import salt.movil.funfit.models.Power;
+import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.ui.adapters.PowerAdapter;
 import salt.movil.funfit.ui.fragments.QRScannerFragment;
 import salt.movil.funfit.utils.Constants;
@@ -147,23 +151,40 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         initQRReader();
     }
 
+    //Method for render accions on IU
     @Override
     public void setActionQr(int code, int value) {
         switch (code){
             case AdminResultQR.KEY1:
                 addKey();
                 break;
+
             case AdminResultQR.ADD_TIME:
                 timerUser.addTime(value);
                 showAlert("Bien","Tienes más tiempo");
                 break;
             case AdminResultQR.REDUCE_TIME:
+                timerUser.reduceTime(value);
+                showAlert(":(","Perdiste "+value+"segundos");
+                break;
+
+            case AdminResultQR.REDUCE_ENEMY_TIME:
                 addPower(Power.REDUCE_TIME_ACCTION,value);
                 break;
+
             case AdminResultQR.REMOVE_ENEMY_KEY:
                 addPower(Power.REMOVE_ENEMY_KEY, value);
                 break;
+
             case AdminResultQR.READED_CODE:
+                break;
+
+            case AdminResultQR.GOT_CURE:
+                winGame();
+                break;
+
+            case AdminResultQR.MISS_KEYS_FOR_CURE:
+                showAlert("Necesitas mas llaves","Te faltan "+value+" llaves");
                 break;
         }
     }
@@ -183,6 +204,20 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
                     break;
             }
         }
+    }
+
+    private void winGame(){
+        try {
+            Socket socket = MySocket.getInstance();
+            JsonObject jo = new JsonObject();
+            jo.addProperty("sender",Player.getInstance().getUsername());
+            socket.emit(Constants.EMIT_WIN_GAME,jo);
+        } catch (URISyntaxException e) {
+            Log.e("MainActivity:winGame","Can't connect with cocket");
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(this,WinActivity.class);
+        startActivity(intent);
     }
 
     private void showAlert(String title, String msj){
@@ -255,6 +290,11 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+        showAlert("Salir?","Deseas salir");
+    }
+
     //endregion
 
     //region Socket
@@ -267,12 +307,16 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     public void onEvent(int type, Object... args) {
         JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
         switch (type){
-            case Constants.EVENT_REDUCE_TIME_PLAYERS:
+            case Constants.EVENT_REDUCE_TIME_PLAYERS_CB:
                     reduceTime(Integer.parseInt(jo.get("time").toString()));
-                    showAlert(":(","You have less time by "+jo.get("sender").getAsString());
+                    showAlert(":(","Tienes menos tiempo, culpa de: "+jo.get("sender").getAsString());
                 break;
-            case Constants.EVENT_REMOVE_KEY:
+            case Constants.EVENT_REMOVE_KEY_CB:
                 removeKey(jo);
+                break;
+            case Constants.EVENT_END_GAME_CB:
+                Intent intent = new Intent(this,GameOverActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -313,7 +357,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             }
         }
     }
-
 
     //endregion
 
