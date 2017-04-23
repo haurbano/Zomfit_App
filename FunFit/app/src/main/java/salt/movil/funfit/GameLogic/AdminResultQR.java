@@ -4,6 +4,10 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import java.security.PublicKey;
+<<<<<<< 6c903469337eaaf9e3287ac10a9a4fa2d65cb2a2
+=======
+import java.util.Random;
+>>>>>>> Commit antes del formateo
 import java.util.concurrent.ThreadLocalRandom;
 
 import salt.movil.funfit.models.Player;
@@ -81,8 +85,14 @@ public class AdminResultQR {
         int maxPower = 4;
         int minTime = (int) Math.round(Player.getInstance().getTime() * 0.1);
         int maxTime = (int) Math.round(Player.getInstance().getTime() * 0.3);
+<<<<<<< 6c903469337eaaf9e3287ac10a9a4fa2d65cb2a2
         int power = ThreadLocalRandom.current().nextInt(minPower, maxPower + 1);
         int value = ThreadLocalRandom.current().nextInt(minTime, maxTime + 1);
+=======
+        Random r = new Random();
+        int power = r.nextInt(maxPower - minPower + 1) + minPower;
+        int value = r.nextInt(maxTime - minTime + 1) + minTime;
+>>>>>>> Commit antes del formateo
 
         selectPower(power,value);
     }

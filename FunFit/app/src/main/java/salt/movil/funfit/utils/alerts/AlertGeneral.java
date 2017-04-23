@@ -2,6 +2,7 @@ package salt.movil.funfit.utils.alerts;
 
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -38,8 +39,14 @@ public class AlertGeneral extends DialogFragment{
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(binding.getRoot());
-
+        setFonts(binding);
         return builder.create();
+    }
+
+    private void setFonts(LayoutAlertGeneralBinding binding){
+        Typeface wordType = Typeface.createFromAsset(getActivity().getAssets(),"fonts/fonty.ttf");
+        binding.txtTitleAlertGeneral.setTypeface(wordType);
+        binding.txtMessageAlertGeneral.setTypeface(wordType);
     }
 
 }

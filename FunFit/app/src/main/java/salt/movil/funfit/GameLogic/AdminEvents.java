@@ -46,6 +46,7 @@ public class AdminEvents {
         mSocket.on(Constants.EVENT_REDUCE_TIME_PLAYERS,reduceTime);
         mSocket.on(Constants.EVENT_REMOVE_KEY,removeKey);
         mSocket.on(Constants.EVENT_END_GAME,endGame);
+        mSocket.on(Constants.EVENT_PLAYER_LEAVE_GAME,playerLeaveGame);
     }
 
     //region Events
@@ -84,5 +85,12 @@ public class AdminEvents {
             isocketCallBacks.onEvent(Constants.EVENT_END_GAME_CB,args);
         }
     };
+
+    private Emitter.Listener playerLeaveGame = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            isocketCallBacks.onEvent(Constants.EVENT_PLAYER_LEAVE_GAME_CB, args);
+        }
+    };  
     //endregion
 }

@@ -1,8 +1,14 @@
 package salt.movil.funfit.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +35,33 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         btnPlay.setOnClickListener(this);
         btnCredits.setOnClickListener(this);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestPermisions();
+    }
+
+    private void requestPermisions(){
+        int permisos = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (permisos == PackageManager.PERMISSION_DENIED){
+           boolean cantRequestPermission =  ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA);
+            if (!cantRequestPermission){
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},101);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 101:
+                if (grantResults.length > 0){
+                    Log.d("FirstActivity:onRequest","permisio camera ok");
+                }
+                break;
+        }
     }
 
     //region FullScreenMode

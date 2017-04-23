@@ -287,7 +287,19 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         if (timerUser!=null)
             timerUser.stopTimer();
         timerUser = null;
+        exitPlayer();
         super.onDestroy();
+    }
+
+    private void exitPlayer() {
+        try {
+            Socket socket = MySocket.getInstance();
+            JsonObject jo = new JsonObject();
+            jo.addProperty("sender",Player.getInstance().getUsername());
+            socket.emit(Constants.EMIT_EXIT_PLAYER,jo);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -297,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     //endregion
 
-    //region Socket
+    //region Socket Listener
     private void initSocket(){
         AdminEvents adminEvents = new AdminEvents();
         adminEvents.listenEvents(this);
@@ -317,6 +329,10 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             case Constants.EVENT_END_GAME_CB:
                 Intent intent = new Intent(this,GameOverActivity.class);
                 startActivity(intent);
+                break;
+
+            case Constants.EVENT_PLAYER_LEAVE_GAME_CB:
+                showAlert("Uno Menos", jo.get("sender").toString()+" Avandyono el juego");
                 break;
         }
     }
