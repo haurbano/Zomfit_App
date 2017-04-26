@@ -3,6 +3,7 @@ package salt.movil.funfit.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,16 @@ public class PowerAdapter extends BaseAdapter {
         Power power = data.get(position);
         binding.imagePowerAdapter.setImageResource(power.getImage());
         binding.valuePowerAdapter.setText(power.getValue()+"");
+        binding.txtNamePowerAdapter.setText(power.getAccion());
+
+        if (power.isFake()){
+            binding.txtNamePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorGray));
+            binding.valuePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorGray));
+        }else{
+            binding.txtNamePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorPrimaryDark));
+            binding.valuePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorPrimary));
+        }
+
         convertView.setTag(binding);
         return convertView;
     }

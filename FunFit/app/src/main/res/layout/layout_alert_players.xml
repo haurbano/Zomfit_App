@@ -10,6 +10,14 @@
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:textColor="@color/green"
+            style="@style/Base.TextAppearance.AppCompat.Display1"
+            android:gravity="center"
+            android:text="Jugadores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <ListView
             android:id="@+id/list_players"
             android:layout_width="match_parent"

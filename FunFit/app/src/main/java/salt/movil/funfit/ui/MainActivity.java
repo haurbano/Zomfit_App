@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             showAlert("Bien","Tienes 3 llaves, corre a la cura");
             binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key);
         }else {
+            showAlert("¡BIEN!","Encontraste una llave");
             switch (numberOfKeys){
                 case 1:
                     binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);
@@ -225,24 +226,6 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         alert.show(getSupportFragmentManager(),"tag");
     }
 
-    private void addPower(String acction, int value){
-        if (powers==null)
-            powers = new ArrayList<>();
-        Power power;
-        if (acction.equals(Power.REDUCE_TIME_ACCTION))
-            power = new Power(acction,value,R.drawable.ic_clock_life_time);
-        else
-            power = new Power(acction,value,R.drawable.ic_key);
-
-        animAddPower(power);
-        powers.add(power);
-        showPowers(powers);
-    }
-
-    private void showPowers(List<Power> data){
-        PowerAdapter adapter = new PowerAdapter(data,this);
-        binding.contentPowersLayout.listViewPowers.setAdapter(adapter);
-    }
     //endregion
 
     //region Animations
@@ -341,11 +324,48 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     //region  Powers
     private void initPowers(){
         binding.contentPowersLayout.listViewPowers.setOnItemClickListener(this);
+        Power powerFake = new Power(Power.FAKE_POWER,0,R.drawable.ic_fake_power,true);
+        if (powers == null)
+            powers = new ArrayList<>();
+
+        powers.add(powerFake);
+        powers.add(powerFake);
+        powers.add(powerFake);
+
+        showPowers(powers);
+    }
+
+    private void addPower(String acction, int value){
+        if (powers==null)
+            powers = new ArrayList<>();
+        if (powers.size()>0)
+            if (powers.get(0).isFake())
+                powers.clear();
+
+        Power power;
+        if (acction.equals(Power.REDUCE_TIME_ACCTION))
+            power = new Power(acction,value,R.drawable.ic_clock_life_time, false);
+        else
+            power = new Power(acction,value,R.drawable.ic_key, false);
+
+        animAddPower(power);
+        powers.add(power);
+        showPowers(powers);
+    }
+
+    private void showPowers(List<Power> data){
+        PowerAdapter adapter = new PowerAdapter(data,this);
+        binding.contentPowersLayout.listViewPowers.setAdapter(adapter);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
         Power currentPower = powers.get(position);
+
+        if (currentPower.isFake())
+            return;
+
         powers.remove(position);
         showPowers(powers);
 

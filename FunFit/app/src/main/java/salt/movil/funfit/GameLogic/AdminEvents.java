@@ -91,6 +91,6 @@ public class AdminEvents {
         public void call(Object... args) {
             isocketCallBacks.onEvent(Constants.EVENT_PLAYER_LEAVE_GAME_CB, args);
         }
-    };  
+    };
     //endregion
 }

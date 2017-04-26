@@ -32,7 +32,8 @@
         <activity
             android:name=".ui.CreditsActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".ui.WinActivity"></activity>
+        <activity android:name=".ui.WinActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

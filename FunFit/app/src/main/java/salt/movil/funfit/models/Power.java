@@ -5,17 +5,20 @@ package salt.movil.funfit.models;
  */
 
 public class Power {
-    public final static String REDUCE_TIME_ACCTION = "reduce_time_acction";
-    public final static String REMOVE_ENEMY_KEY = "remove_enemy_key";
+    public final static String REDUCE_TIME_ACCTION = "Quitar tiempo";
+    public final static String REMOVE_ENEMY_KEY = "Quitar llave";
+    public final static String FAKE_POWER = "Poder";
 
     String accion;
     int value;
     int image;
+    boolean fake;
 
-    public Power(String accion, int value, int image) {
+    public Power(String accion, int value, int image, boolean fake) {
         this.accion = accion;
         this.value = value;
         this.image = image;
+        this.fake = fake;
     }
 
     public String getAccion() {
@@ -40,5 +43,9 @@ public class Power {
 
     public void setImage(int image) {
         this.image = image;
+    }
+
+    public boolean isFake(){
+        return this.fake;
     }
 }
