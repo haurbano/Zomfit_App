@@ -22,22 +22,23 @@
             android:layout_marginBottom="20dp"
             android:text="Ingresa un nombre de usuario"
             android:layout_width="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/green"
             android:layout_height="wrap_content" />
 
         <EditText
             android:hint="¡Escribe aqui!"
-            android:textColorHint="@color/colorPrimary"
+            android:textColorHint="@color/red"
             android:background="@drawable/shape_rectangulo_punteado"
             android:id="@+id/edit_username_inicial_activity"
             android:gravity="center"
             android:layout_width="200dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/red"
             android:layout_height="30dp" />
 
         <Button
+            android:textAllCaps="false"
             android:id="@+id/btn_continue_inicial_activity"
-            android:background="@color/colorPrimary"
+            android:background="@color/green"
             android:text="Unirse a una partida"
             android:textColor="@color/colorAccent"
             android:layout_marginTop="20dp"

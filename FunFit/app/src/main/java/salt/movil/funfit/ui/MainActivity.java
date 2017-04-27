@@ -161,11 +161,11 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
             case AdminResultQR.ADD_TIME:
                 timerUser.addTime(value);
-                showAlert("Bien","Tienes más tiempo");
+                showAlert("Bien","+ tiempo");
                 break;
             case AdminResultQR.REDUCE_TIME:
                 timerUser.reduceTime(value);
-                showAlert(":(","Perdiste "+value+"segundos");
+                showAlert(":(","- "+value+"segundos");
                 break;
 
             case AdminResultQR.REDUCE_ENEMY_TIME:
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             showAlert("Bien","Tienes 3 llaves, corre a la cura");
             binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key);
         }else {
-            showAlert("¡BIEN!","Encontraste una llave");
+            showAlert("¡BIEN!","+ 1 llave");
             switch (numberOfKeys){
                 case 1:
                     binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);

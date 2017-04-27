@@ -1,6 +1,7 @@
 package salt.movil.funfit.ui;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -71,6 +72,11 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
         edtUsername = (EditText) findViewById(R.id.edit_username_inicial_activity);
         btnContinue = (Button) findViewById(R.id.btn_continue_inicial_activity);
         txtRegistered = (TextView) findViewById(R.id.txt_registered_user_initial_activity);
+
+        Typeface wordType = Typeface.createFromAsset(getAssets(),"fonts/zombie_font.ttf");
+        txtRegistered.setTypeface(wordType);
+        edtUsername.setTypeface(wordType);
+        btnContinue.setTypeface(wordType);
 
         btnContinue.setOnClickListener(this);
     }

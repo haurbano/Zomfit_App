@@ -3,6 +3,7 @@ package salt.movil.funfit.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +59,11 @@ public class PowerAdapter extends BaseAdapter {
         binding.imagePowerAdapter.setImageResource(power.getImage());
         binding.valuePowerAdapter.setText(power.getValue()+"");
         binding.txtNamePowerAdapter.setText(power.getAccion());
+
+        Typeface wordType = Typeface.createFromAsset(context.getAssets(),"fonts/zombie_font_names.ttf");
+
+        binding.txtNamePowerAdapter.setTypeface(wordType);
+        binding.valuePowerAdapter.setTypeface(wordType);
 
         if (power.isFake()){
             binding.txtNamePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorGray));

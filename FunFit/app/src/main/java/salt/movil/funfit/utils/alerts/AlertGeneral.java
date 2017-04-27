@@ -44,7 +44,7 @@ public class AlertGeneral extends DialogFragment{
     }
 
     private void setFonts(LayoutAlertGeneralBinding binding){
-        Typeface wordType = Typeface.createFromAsset(getActivity().getAssets(),"fonts/fonty.ttf");
+        Typeface wordType = Typeface.createFromAsset(getActivity().getAssets(),"fonts/zombie_font.ttf");
         binding.txtTitleAlertGeneral.setTypeface(wordType);
         binding.txtMessageAlertGeneral.setTypeface(wordType);
     }

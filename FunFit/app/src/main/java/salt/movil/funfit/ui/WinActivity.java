@@ -36,7 +36,7 @@ public class WinActivity extends AppCompatActivity {
     //endregion
 
     private void setFonts(){
-        Typeface wordType = Typeface.createFromAsset(getAssets(),"fonts/fonty.ttf");
+        Typeface wordType = Typeface.createFromAsset(getAssets(),"fonts/zombie_font.ttf");
         binding.txtGanasteWinActivity.setTypeface(wordType);
     }
 }

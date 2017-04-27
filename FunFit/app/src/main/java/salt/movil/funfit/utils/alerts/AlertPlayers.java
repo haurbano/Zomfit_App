@@ -2,6 +2,7 @@ package salt.movil.funfit.utils.alerts;
 
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -48,6 +49,9 @@ public class AlertPlayers extends DialogFragment implements AdapterView.OnItemCl
         binding.listPlayers.setAdapter(adapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(binding.getRoot());
+
+        Typeface wordType = Typeface.createFromAsset(getActivity().getAssets(),"fonts/zombie_font_names.ttf");
+        binding.txtTitleAlertPlayers.setTypeface(wordType);
 
         binding.listPlayers.setOnItemClickListener(this);
         alertDialog = builder.create();

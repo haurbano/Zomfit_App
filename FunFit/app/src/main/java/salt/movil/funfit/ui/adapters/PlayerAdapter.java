@@ -2,6 +2,7 @@ package salt.movil.funfit.ui.adapters;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,8 @@ public class PlayerAdapter extends BaseAdapter {
 
         Player player = data.get(position);
         binding.txtNamePlayerAdapter.setText(player.getUsername());
+        Typeface wordType = Typeface.createFromAsset(context.getAssets(),"fonts/zombie_font_names.ttf");
+        binding.txtNamePlayerAdapter.setTypeface(wordType);
         convertView.setTag(binding);
         return convertView;
     }

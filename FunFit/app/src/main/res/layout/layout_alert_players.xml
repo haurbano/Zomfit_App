@@ -11,6 +11,7 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/txt_title_alert_players"
             android:textColor="@color/green"
             style="@style/Base.TextAppearance.AppCompat.Display1"
             android:gravity="center"
