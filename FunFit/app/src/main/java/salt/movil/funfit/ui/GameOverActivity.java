@@ -19,7 +19,8 @@ public class GameOverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this,R.layout.activity_game_over);
-        binding.setPlayer(Player.getInstance());
+        String msj = getIntent().getStringExtra("msj");
+        binding.setMsj(msj);
 
         setFonts();
     }
@@ -32,7 +33,7 @@ public class GameOverActivity extends AppCompatActivity {
     }
 
     private void setFonts(){
-        Typeface wordType = Typeface.createFromAsset(getAssets(),"fonts/fonty.ttf");
+        Typeface wordType = Typeface.createFromAsset(getAssets(),"fonts/zombie_font_names.ttf");
         binding.txtNameUserGameOver.setTypeface(wordType);
         binding.txtGameOver.setTypeface(wordType);
     }

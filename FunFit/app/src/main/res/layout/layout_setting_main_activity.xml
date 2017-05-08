@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="handler" type="salt.movil.funfit.ui.alerts.AlertSettingMain"/>
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/img_sound_main_activity"
+                android:onClick="@{() -> handler.changeSound()}"
+                android:src="@drawable/ic_sound_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:onClick="@{() -> handler.changeSound()}"
+                android:id="@+id/txt_sound_alert_settings_main"
+                android:layout_marginLeft="10dp"
+                android:text="On"
+                android:textColor="@color/green"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:onClick="@{() -> handler.exitGame()}"
+                android:src="@drawable/ic_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:onClick="@{() -> handler.exitGame()}"
+                android:id="@+id/txt_salir_alert_setting_main"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="Salir"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:onClick="@{() -> handler.backGame()}"
+                android:src="@drawable/ic_zombie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:onClick="@{() -> handler.backGame()}"
+                android:id="@+id/txt_volver_setting_alerts_main"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="Volver"
+                android:textColor="@color/green"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

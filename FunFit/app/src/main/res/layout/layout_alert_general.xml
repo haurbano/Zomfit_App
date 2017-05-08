@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="string"
-            type="String"/>
+            name="handler"
+            type="salt.movil.funfit.ui.alerts.AlertGeneral"/>
     </data>
 
     <LinearLayout
@@ -15,22 +15,34 @@
             android:id="@+id/txt_title_alert_general"
             android:text="Title"
             android:textColor="@color/green"
-            style="@style/Base.TextAppearance.AppCompat.Display3"
+            style="@style/Base.TextAppearance.AppCompat.Display2"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <TextView
             android:textColor="@color/red"
             android:id="@+id/txt_message_alert_general"
-            style="@style/Base.TextAppearance.AppCompat.Display2"
+            style="@style/Base.TextAppearance.AppCompat.Display1"
             android:text="mesagge"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@mipmap/first_activity_zombie"
-            android:layout_width="250dp"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/first_activity_zombie" />
+
+        <Button
+            android:onClick="@{() -> handler.btnContinue()}"
+            android:layout_marginTop="10dp"
+            android:background="@color/green"
+            android:textColor="@color/colorWhite"
+            android:text="Continuar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>

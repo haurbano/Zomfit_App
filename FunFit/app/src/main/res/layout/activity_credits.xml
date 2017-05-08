@@ -7,7 +7,7 @@
     tools:context="salt.movil.funfit.ui.CreditsActivity"
     android:orientation="vertical">
     <ImageView
-        android:background="@color/colorAccent"
+        android:background="@color/colorWhite"
         android:src="@mipmap/unicauca"
         android:layout_width="match_parent"
         android:layout_height="100dp" />

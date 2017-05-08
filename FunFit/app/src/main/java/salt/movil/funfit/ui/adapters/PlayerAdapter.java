@@ -56,6 +56,7 @@ public class PlayerAdapter extends BaseAdapter {
 
         Player player = data.get(position);
         binding.txtNamePlayerAdapter.setText(player.getUsername());
+        binding.txtNumberKeysPlayerAdapter.setText(player.getNumberKeys()+"");
         Typeface wordType = Typeface.createFromAsset(context.getAssets(),"fonts/zombie_font_names.ttf");
         binding.txtNamePlayerAdapter.setTypeface(wordType);
         convertView.setTag(binding);

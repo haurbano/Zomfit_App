@@ -1,6 +1,7 @@
 package salt.movil.funfit.ui;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Point;
@@ -19,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -37,12 +39,13 @@ import salt.movil.funfit.models.Player;
 import salt.movil.funfit.models.Power;
 import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.ui.adapters.PowerAdapter;
+import salt.movil.funfit.ui.alerts.AlertGeneral;
+import salt.movil.funfit.ui.alerts.AlertPlayers;
+import salt.movil.funfit.ui.alerts.AlertSettingMain;
 import salt.movil.funfit.ui.fragments.QRScannerFragment;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
 import salt.movil.funfit.utils.Players;
-import salt.movil.funfit.utils.alerts.AlertGeneral;
-import salt.movil.funfit.utils.alerts.AlertPlayers;
 
 public class MainActivity extends AppCompatActivity implements IsocketCallBacks, QRScannerFragment.Ireader, AdminResultQR.IResultQr, AdapterView.OnItemClickListener {
 
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         super.onCreate(savedInstanceState);
         fullScreenMode();
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        binding.setHandler(this);
         initSocket();
         initPowers();
         mPLayer = MediaPlayer.create(this,R.raw.beep);
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             timerUser.stopTimer();
             mPLayer.stop();
             Intent intent = new Intent(this,GameOverActivity.class);
+            intent.putExtra("msj","Se te acabo el tiempo");
             startActivity(intent);
         }
     }
@@ -161,11 +166,11 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
             case AdminResultQR.ADD_TIME:
                 timerUser.addTime(value);
-                showAlert("Bien","+ tiempo");
+                showAlert("Bien","+ tiempo",R.mipmap.more_time);
                 break;
             case AdminResultQR.REDUCE_TIME:
                 timerUser.reduceTime(value);
-                showAlert(":(","- "+value+"segundos");
+                showAlert(":(","- "+value+"segundos",R.mipmap.less_time);
                 break;
 
             case AdminResultQR.REDUCE_ENEMY_TIME:
@@ -184,18 +189,35 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
                 break;
 
             case AdminResultQR.MISS_KEYS_FOR_CURE:
-                showAlert("Necesitas mas llaves","Te faltan "+value+" llaves");
+                showAlert("Necesitas mas llaves","Te faltan "+value+" llaves",R.drawable.ic_miss_keys);
                 break;
         }
     }
 
     private void addKey(){
         int numberOfKeys = Player.getInstance().getNumberKeys();
+        JsonObject jo = new JsonObject();
+        jo.addProperty("sender",Player.getInstance().getUsername());
+        jo.addProperty("keys",Player.getInstance().getNumberKeys());
+
         if (numberOfKeys == 3){
-            showAlert("Bien","Tienes 3 llaves, corre a la cura");
+            showAlert("Bien","Tienes 3 llaves, corre a la cura",R.drawable.ic_three_keys);
             binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key);
+            try {
+                Socket socket = MySocket.getInstance(this);
+                socket.emit(Constants.EMIT_FOUND_ALL_KEYS,jo);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
         }else {
-            showAlert("¡BIEN!","+ 1 llave");
+            showAlert("¡BIEN!","+ 1 llave",R.mipmap.one_key_more);
+            try {
+                Socket socket = MySocket.getInstance(this);
+                socket.emit(Constants.EMIT_KEY_FOUND,jo);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
             switch (numberOfKeys){
                 case 1:
                     binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);
@@ -209,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     private void winGame(){
         try {
-            Socket socket = MySocket.getInstance();
+            Socket socket = MySocket.getInstance(this);
             JsonObject jo = new JsonObject();
             jo.addProperty("sender",Player.getInstance().getUsername());
             socket.emit(Constants.EMIT_WIN_GAME,jo);
@@ -221,8 +243,8 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         startActivity(intent);
     }
 
-    private void showAlert(String title, String msj){
-        AlertGeneral alert = AlertGeneral.newInstance(title,msj);
+    private void showAlert(String title, String msj, int icon){
+        AlertGeneral alert = AlertGeneral.newInstance(title,msj,icon);
         alert.show(getSupportFragmentManager(),"tag");
     }
 
@@ -276,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     private void exitPlayer() {
         try {
-            Socket socket = MySocket.getInstance();
+            Socket socket = MySocket.getInstance(this);
             JsonObject jo = new JsonObject();
             jo.addProperty("sender",Player.getInstance().getUsername());
             socket.emit(Constants.EMIT_EXIT_PLAYER,jo);
@@ -287,35 +309,43 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     @Override
     public void onBackPressed() {
-        showAlert("Salir?","Deseas salir");
+        showAlert("Salir?","Deseas salir",R.mipmap.first_activity_zombie);
     }
 
     //endregion
 
     //region Socket Listener
     private void initSocket(){
-        AdminEvents adminEvents = new AdminEvents();
+        AdminEvents adminEvents = new AdminEvents(this);
         adminEvents.listenEvents(this);
     }
 
     @Override
     public void onEvent(int type, Object... args) {
         JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
+        String sender = jo.get("sender").getAsString();
         switch (type){
             case Constants.EVENT_REDUCE_TIME_PLAYERS_CB:
-                    reduceTime(Integer.parseInt(jo.get("time").toString()));
-                    showAlert(":(","Tienes menos tiempo, culpa de: "+jo.get("sender").getAsString());
+                reduceTime(Integer.parseInt(jo.get("time").toString()));
+                showAlert(":(","Tienes menos tiempo, culpa de: "+sender,R.mipmap.less_time);
                 break;
             case Constants.EVENT_REMOVE_KEY_CB:
                 removeKey(jo);
                 break;
             case Constants.EVENT_END_GAME_CB:
                 Intent intent = new Intent(this,GameOverActivity.class);
+                String msj = sender +" Gano!";
+                intent.putExtra("msj",msj);
                 startActivity(intent);
                 break;
-
             case Constants.EVENT_PLAYER_LEAVE_GAME_CB:
-                showAlert("Uno Menos", jo.get("sender").toString()+" Avandyono el juego");
+                showAlert("Uno Menos", sender+" Avandono el juego",R.drawable.ic_zombie_less);
+                break;
+            case Constants.EVENT_FOUND_ALL_KEYS_CB:
+                showAlert("Alguien ganará",sender+" tiene 3 llaves",R.drawable.ic_someone_have_keys);
+                break;
+            case Constants.EVENT_ENEMY_FOUND_KEY_CB:
+                showAlert("Enemigo encontro 1 llave",sender+" encontro 1 llave",R.mipmap.first_activity_zombie);
                 break;
         }
     }
@@ -342,15 +372,18 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
             if (powers.get(0).isFake())
                 powers.clear();
 
-        Power power;
-        if (acction.equals(Power.REDUCE_TIME_ACCTION))
-            power = new Power(acction,value,R.drawable.ic_clock_life_time, false);
-        else
-            power = new Power(acction,value,R.drawable.ic_key, false);
+        if (powers.size()<3){
+            Power power;
+            if (acction.equals(Power.REDUCE_TIME_ACCTION))
+                power = new Power(acction,value,R.drawable.ic_clock_life_time, false);
+            else
+                power = new Power(acction,value,R.drawable.ic_key, false);
 
-        animAddPower(power);
-        powers.add(power);
-        showPowers(powers);
+            animAddPower(power);
+            powers.add(power);
+            showPowers(powers);
+        }
+
     }
 
     private void showPowers(List<Power> data){
@@ -361,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        Power currentPower = powers.get(position);
+        final Power currentPower = powers.get(position);
 
         if (currentPower.isFake())
             return;
@@ -369,8 +402,30 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         powers.remove(position);
         showPowers(powers);
 
+        try {
+            Socket socket = MySocket.getInstance((Activity) view.getContext());
+            socket.emit(Constants.EMIT_GET_PLAYERS, "data", new Ack() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showPlayersAlert(currentPower,args[0].toString());
+                        }
+                    });
+                }
+            });
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void showPlayersAlert(Power currentPower, String playersString){
+        List<Player> players = Players.getInstance().parsePlayer(playersString);
         AlertPlayers alertPlayers = new AlertPlayers();
-        alertPlayers.setArguments(Players.getInstace().getPlayers(),currentPower);
+        alertPlayers.setArguments(players,currentPower);
         alertPlayers.show(getSupportFragmentManager(),"tag");
     }
 
@@ -379,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         if (numberKeys!=0){
             final String sender = jo.get("sender").getAsString();
             Player.getInstance().setNumberKeys(numberKeys-1);
-            showAlert("Menos una llave", "Te la quito "+sender);
+            showAlert("Menos una llave", "Te la quito "+sender,R.drawable.ic_key_less);
             switch (numberKeys){
                 case 1:
                     binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);
@@ -394,6 +449,13 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         }
     }
 
+    //endregion
+
+    //region Settings
+    public void showAlertSettings(){
+        AlertSettingMain alert = AlertSettingMain.newInstance();
+        alert.show(getFragmentManager(),"tag");
+    }
     //endregion
 
 }

@@ -84,7 +84,7 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
 
     //region Sockets
     private void initSockets(){
-        AdminEvents adminEvents = new AdminEvents();
+        AdminEvents adminEvents = new AdminEvents(this);
         adminEvents.listenEvents(this);
     }
 
@@ -100,22 +100,10 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
 
     //region Actions game
     private void startGame(Object... args){
-        int time = Integer.parseInt((String) args[1]);
+        int time = Integer.parseInt((String) args[0]);
         Player.getInstance().setTime(time);
-        try {
-            JSONArray players = new JSONArray(args[0].toString());
-            for (int i=0; i<players.length();i++){
-                Player player = new Player();
-                player.setNumberKeys(players.getJSONObject(i).getInt("keys"));
-                player.setUsername(players.getJSONObject(i).getString("name"));
-                Players.getInstace().getPlayers().add(player);
-            }
-            //Init countdown
-            showCountdown();
-        } catch (JSONException e) {
-            Log.e("InitialActivity","Error whe try convert String to JSONArray");
-            e.printStackTrace();
-        }
+        showCountdown();
+
     }
 
     private void showCountdown(){
@@ -158,7 +146,7 @@ public class InicialActivity extends AppCompatActivity implements IsocketCallBac
         if (!username.isEmpty()){
             Player.getInstance().setUsername(username);
             try {
-                socket = MySocket.getInstance();
+                socket = MySocket.getInstance(this);
                 socket.emit(Constants.EMIT_REGISTER_PLAYER, username, new Ack() {
                     @Override
                     public void call(Object... args) {

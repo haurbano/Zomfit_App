@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,43 +7,48 @@
     tools:context="salt.movil.funfit.ui.FirstActivity"
     android:padding="20dp"
     android:orientation="horizontal"
-    android:background="#fff">
+    android:background="@color/backgroundgeneral">
+
+    <ImageButton
+        android:layout_gravity="right"
+        android:background="@color/backgroundgeneral"
+        android:src="@drawable/ic_info"
+        android:id="@+id/btn_credits_first_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        />
+
+    <ImageButton
+        android:layout_toLeftOf="@id/btn_credits_first_activity"
+        android:id="@+id/btn_settings_first_activity"
+        android:background="@color/backgroundgeneral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_settings"
+        android:layout_marginRight="20dp"/>
+
+
+    <Button
+        android:paddingTop="15dp"
+        android:text="Jugar"
+        android:textColor="@color/backgroundgeneral"
+        style="@style/Base.TextAppearance.AppCompat.Display1"
+        android:id="@+id/btn_play_first_activity"
+        android:layout_width="200dp"
+        android:background="@mipmap/cerebro_jugar"
+        android:layout_height="130dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
 
     <ImageView
+        android:layout_toLeftOf="@id/btn_play_first_activity"
+        android:layout_gravity="center"
         android:id="@+id/img_first_activity"
         android:src="@mipmap/first_activity_zombie"
-        android:layout_width="0dp"
-        android:layout_weight="3"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:src="@mipmap/cerebro_jugar"
-            android:id="@+id/btn_play_first_activity"
-            android:layout_width="wrap_content"
-            android:background="@color/colorAccent"
-            android:layout_weight="3"
-            android:layout_height="0dp"/>
-
-        <ImageButton
-            android:layout_gravity="right"
-            android:background="@color/colorAccent"
-            android:src="@drawable/ic_info"
-            android:id="@+id/btn_credits_first_activity"
-            android:layout_width="50dp"
-            android:layout_height="0dp"
-            android:layout_weight="2"/>
-
-    </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_centerVertical="true"/>
 
 
-
-
-
-
-</LinearLayout>
+</RelativeLayout>

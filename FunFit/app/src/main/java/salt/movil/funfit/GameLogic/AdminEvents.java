@@ -1,5 +1,6 @@
 package salt.movil.funfit.GameLogic;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -8,11 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import salt.movil.funfit.models.Player;
 import salt.movil.funfit.net.MySocket;
 import salt.movil.funfit.utils.Constants;
 import salt.movil.funfit.utils.IsocketCallBacks;
+import salt.movil.funfit.utils.Players;
 
 /**
  * Created by Hamilton Urbano on 01/11/2016.
@@ -25,9 +28,9 @@ public class AdminEvents {
 
     private boolean connectSucces;
 
-    public AdminEvents() {
+    public AdminEvents(AppCompatActivity activity) {
         try {
-            mSocket = MySocket.getInstance();
+            mSocket = MySocket.getInstance(activity);
             connectSucces = true;
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -47,13 +50,14 @@ public class AdminEvents {
         mSocket.on(Constants.EVENT_REMOVE_KEY,removeKey);
         mSocket.on(Constants.EVENT_END_GAME,endGame);
         mSocket.on(Constants.EVENT_PLAYER_LEAVE_GAME,playerLeaveGame);
+        mSocket.on(Constants.EVENT_FOUND_ALL_KEYS,foundAllKeys);
+        mSocket.on(Constants.EVENT_ENEMY_FOUND_KEY,enemyFoundKey);
     }
 
     //region Events
     private Emitter.Listener startGame = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Log.i("salt1","Llega al evento de starGame");
             isocketCallBacks.onEvent(Constants.EVENT_START_GAME_PLAYERS_CB, args);
         }
     };
@@ -90,6 +94,20 @@ public class AdminEvents {
         @Override
         public void call(Object... args) {
             isocketCallBacks.onEvent(Constants.EVENT_PLAYER_LEAVE_GAME_CB, args);
+        }
+    };
+
+    private Emitter.Listener foundAllKeys = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            isocketCallBacks.onEvent(Constants.EVENT_FOUND_ALL_KEYS_CB, args);
+        }
+    };
+
+    private Emitter.Listener enemyFoundKey = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            isocketCallBacks.onEvent(Constants.EVENT_ENEMY_FOUND_KEY_CB,args);
         }
     };
     //endregion

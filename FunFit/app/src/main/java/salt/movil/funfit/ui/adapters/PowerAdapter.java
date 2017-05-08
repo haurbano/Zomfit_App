@@ -57,20 +57,16 @@ public class PowerAdapter extends BaseAdapter {
 
         Power power = data.get(position);
         binding.imagePowerAdapter.setImageResource(power.getImage());
-        binding.valuePowerAdapter.setText(power.getValue()+"");
-        binding.txtNamePowerAdapter.setText(power.getAccion());
+        binding.txtNamePowerAdapter.setText(power.getAccion()+ " "+power.getValue());
 
         Typeface wordType = Typeface.createFromAsset(context.getAssets(),"fonts/zombie_font_names.ttf");
 
         binding.txtNamePowerAdapter.setTypeface(wordType);
-        binding.valuePowerAdapter.setTypeface(wordType);
 
         if (power.isFake()){
             binding.txtNamePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorGray));
-            binding.valuePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorGray));
         }else{
             binding.txtNamePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorPrimaryDark));
-            binding.valuePowerAdapter.setTextColor(ContextCompat.getColor(context,R.color.colorPrimary));
         }
 
         convertView.setTag(binding);

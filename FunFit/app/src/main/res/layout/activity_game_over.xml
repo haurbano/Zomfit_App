@@ -2,8 +2,8 @@
 <layout>
     <data>
         <variable
-            name="player"
-            type="salt.movil.funfit.models.Player"/>
+            name="msj"
+            type="String"/>
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,10 +17,10 @@
 
         <TextView
             android:id="@+id/txt_name_user_game_over"
-            style="@style/Base.TextAppearance.AppCompat.Display2"
+            style="@style/Base.TextAppearance.AppCompat.Display1"
             android:gravity="center"
             android:textColor="@color/green"
-            android:text="@{player.username}"
+            android:text="@{msj}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <TextView

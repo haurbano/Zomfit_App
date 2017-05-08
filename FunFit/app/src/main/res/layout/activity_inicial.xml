@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/colorWhite"
     tools:context="salt.movil.funfit.ui.InicialActivity"
     android:orientation="horizontal">
 
@@ -40,7 +40,7 @@
             android:id="@+id/btn_continue_inicial_activity"
             android:background="@color/green"
             android:text="Unirse a una partida"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorWhite"
             android:layout_marginTop="20dp"
             android:layout_width="200dp"
             android:layout_height="wrap_content" />
@@ -55,6 +55,7 @@
         android:src="@mipmap/zombie_crerebro_image"
         android:layout_weight="3"
         android:layout_width="0dp"
+        android:layout_gravity="center"
         android:layout_height="wrap_content" />
 
 </LinearLayout>
