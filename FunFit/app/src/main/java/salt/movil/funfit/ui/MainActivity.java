@@ -322,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     @Override
     public void onEvent(int type, Object... args) {
+        Log.i("haur","onEvent: "+type + " "+args.toString() );
         JsonObject jo = new Gson().fromJson(args[0].toString(),JsonObject.class);
         String sender = jo.get("sender").getAsString();
         switch (type){
@@ -404,7 +405,9 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
         try {
             Socket socket = MySocket.getInstance((Activity) view.getContext());
-            socket.emit(Constants.EMIT_GET_PLAYERS, "data", new Ack() {
+            JsonObject jo = new JsonObject();
+            jo.addProperty("sender",Player.getInstance().getUsername());
+            socket.emit(Constants.EMIT_GET_PLAYERS, jo, new Ack() {
                 @Override
                 public void call(final Object... args) {
                     runOnUiThread(new Runnable() {
@@ -429,24 +432,29 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
         alertPlayers.show(getSupportFragmentManager(),"tag");
     }
 
-    private void removeKey(JsonObject jo){
-        final int numberKeys = Player.getInstance().getNumberKeys();
-        if (numberKeys!=0){
-            final String sender = jo.get("sender").getAsString();
-            Player.getInstance().setNumberKeys(numberKeys-1);
-            showAlert("Menos una llave", "Te la quito "+sender,R.drawable.ic_key_less);
-            switch (numberKeys){
-                case 1:
-                    binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_key);
-                    break;
-                case 2:
-                    binding.contentPowersLayout.key2.setImageResource(R.drawable.ic_key);
-                    break;
-                case 3:
-                    binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_key);
-                    break;
+    private void removeKey(final JsonObject jo){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final int numberKeys = Player.getInstance().getNumberKeys();
+                if (numberKeys!=0){
+                    final String sender = jo.get("sender").getAsString();
+                    Player.getInstance().setNumberKeys(numberKeys-1);
+                    showAlert("Menos una llave", "Te la quito "+sender,R.drawable.ic_key_less);
+                    switch (numberKeys){
+                        case 1:
+                            binding.contentPowersLayout.key1.setImageResource(R.drawable.ic_grey_key);
+                            break;
+                        case 2:
+                            binding.contentPowersLayout.key2.setImageResource(R.drawable.ic_grey_key);
+                            break;
+                        case 3:
+                            binding.contentPowersLayout.key3.setImageResource(R.drawable.ic_grey_key);
+                            break;
+                    }
+                }
             }
-        }
+        });
     }
 
     //endregion
