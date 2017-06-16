@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
 
     @Override
     public void setResult(String result) {
+        Log.i("haur:MainActi","result interface main: "+result);
         if (adminResultQR == null)
             adminResultQR= new AdminResultQR(this);
         adminResultQR.handleResult(result);
@@ -159,8 +160,10 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
     //Method for render accions on IU
     @Override
     public void setActionQr(int code, int value) {
+        Log.i("haur:MainAct","SetAction: code: "+code);
         switch (code){
             case AdminResultQR.KEY1:
+                Log.i("haur:MainAct","SetAction: KEY! case: ");
                 addKey();
                 break;
 
@@ -185,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
                 break;
 
             case AdminResultQR.GOT_CURE:
+                Log.i("haur:MainAct","SetAction: GOT CURE case: ");
                 winGame();
                 break;
 
@@ -439,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements IsocketCallBacks,
                 final int numberKeys = Player.getInstance().getNumberKeys();
                 if (numberKeys!=0){
                     final String sender = jo.get("sender").getAsString();
-                    Player.getInstance().setNumberKeys(numberKeys-1);
+                    Player.getInstance().removeKey();
                     showAlert("Menos una llave", "Te la quito "+sender,R.drawable.ic_key_less);
                     switch (numberKeys){
                         case 1:

@@ -54,6 +54,7 @@ public class QRScannerFragment extends Fragment implements ZXingScannerView.Resu
 
     @Override
     public void handleResult(Result result) {
+        Log.i("haur:QRScanner","result: "+result.getText());
         ireader.setResult(result.getText());
     }
 

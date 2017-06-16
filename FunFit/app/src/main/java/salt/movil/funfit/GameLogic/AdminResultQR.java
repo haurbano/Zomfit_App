@@ -2,8 +2,9 @@ package salt.movil.funfit.GameLogic;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.util.Log;
+
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import salt.movil.funfit.models.Player;
 
@@ -26,9 +27,12 @@ public class AdminResultQR {
     public static final int GOT_CURE = 7;
 
     //Qr codes for keys and cure
+    public static final int KEY0 = 99;
     public static final int KEY1 = 100;
     public static final int KEY2 = 101;
     public static final int KEY3 = 102;
+    public static final int KEY4 = 103;
+    public static final int KEY5 = 104;
     public static final int CURE = 105;
 
     //endregion
@@ -45,6 +49,7 @@ public class AdminResultQR {
 
     public void handleResult(String result){
         int code = Integer.parseInt(result);
+        Log.i("haur:Adminresul","resul int: "+code);
         if (Player.getInstance().getCodesReaders().contains(code)){
             iResultQr.setActionQr(READED_CODE,0);
         }else {
@@ -53,17 +58,34 @@ public class AdminResultQR {
     }
 
     private void aplyCode(int code){
+        Log.i("haur:AdminRes","Code aplyCode: "+code);
         switch (code){
+            case KEY0:
+                Log.i("haur:AdminRes","Case Key0 ");
+                addKey();
+                break;
             case KEY1:
+                Log.i("haur:AdminRes","Case Key1 ");
                 addKey();
                 break;
             case KEY2:
+                Log.i("haur:AdminRes","Case Key2 ");
                 addKey();
                 break;
             case KEY3:
+                Log.i("haur:AdminRes","Case Key3 ");
+                addKey();
+                break;
+            case KEY4:
+                Log.i("haur:AdminRes","Case Key4 ");
+                addKey();
+                break;
+            case KEY5:
+                Log.i("haur:AdminRes","Case Key5 ");
                 addKey();
                 break;
             case CURE:
+                Log.i("haur:AdminRes","Case Key6 ");
                 getCure();
                 break;
             default:
@@ -78,8 +100,8 @@ public class AdminResultQR {
     private void RandomPower(){
         int minPower = 1;
         int maxPower = 4;
-        int minTime = (int) Math.round(Player.getInstance().getTime() * 0.1);
-        int maxTime = (int) Math.round(Player.getInstance().getTime() * 0.3);
+        int minTime = (int) Math.round(Player.getInstance().getTime() * 0.01);
+        int maxTime = (int) Math.round(Player.getInstance().getTime() * 0.05);
         Random r = new Random();
         int power = r.nextInt(maxPower - minPower + 1) + minPower;
         int value = r.nextInt(maxTime - minTime + 1) + minTime;
@@ -121,6 +143,7 @@ public class AdminResultQR {
 
     private void addKey(){
         Player.getInstance().addKey();
+        Log.i("haur:AdminResul","addKey method: #keys: "+Player.getInstance().getNumberKeys());
         iResultQr.setActionQr(KEY1,1);
     }
 

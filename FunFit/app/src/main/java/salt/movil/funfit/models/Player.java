@@ -54,6 +54,11 @@ public class Player {
             numberKeys = numberKeys+1;
     }
 
+    public void removeKey(){
+        if (numberKeys>0)
+            numberKeys = numberKeys-1;
+    }
+
     public List<Integer> getCodesReaders() {
         if (codesReaders==null)
             codesReaders = new ArrayList<>();
